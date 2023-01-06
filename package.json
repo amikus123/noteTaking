@@ -1,0 +1,21 @@
+{
+  "name": "notetaking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd web && npm run dev",
+    "serve": "cd server && "
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amikus123/noteTaking.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amikus123/noteTaking/issues"
+  },
+  "homepage": "https://github.com/amikus123/noteTaking#readme"
+}
