@@ -9,6 +9,7 @@ import CardInteractions from "./CardInteractions";
 interface PublicNoteItemProps {
   publicNote: PublicNote;
   changeToastData: ChangeToastData;
+  removeNote: (id: string) => void;
 }
 
 const {
@@ -18,6 +19,7 @@ const {
 const PublicNoteItem = ({
   publicNote,
   changeToastData,
+  removeNote,
 }: PublicNoteItemProps) => {
   const [dynamicState, setDynamicState] = useState<PublicNote>({
     _id: publicNote._id,
@@ -41,7 +43,17 @@ const PublicNoteItem = ({
         changeToastData("Something went wrong", "red");
       });
   };
-
+  const deleteCard = () => {
+    axios
+      .delete(`${API_HOST}/api/publicNotes/${_id}`)
+      .then(() => {
+        changeToastData("Element has been deleted", "green");
+        removeNote(_id);
+      })
+      .catch(() => {
+        changeToastData("Something went wrong", "red");
+      });
+  };
   return (
     <li
       className={`w-full h-auto 
@@ -50,15 +62,15 @@ const PublicNoteItem = ({
     flex-col
     gap-4
     p-4 ${isDone ? "bg-green-400" : "bg-red-400"}`}
-      onClick={() => {}}
     >
-      <div className=" pt-2 w-full flex justify-end">
+      <div className="w-full flex justify-end">
         <Image
           src="x.svg"
           width={16}
           height={16}
           alt="X"
           className="cursor-pointer"
+          onClick={deleteCard}
         />
       </div>
       <p className="">Title: {title}</p>

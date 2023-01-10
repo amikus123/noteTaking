@@ -17,11 +17,14 @@ export interface PublicNote {
   title: string;
   isDone: boolean;
 }
+
 interface IndexProps {
   changeToastData: ChangeToastData;
 }
 const Index = ({ changeToastData }: IndexProps) => {
-  const [publicNotes, setPublicNotes] = useState<PublicNote[] | null>(null);
+  const [publicNotes, setPublicNotes] = useState<PublicNote[] | undefined>(
+    undefined
+  );
   const [finishedFetching, setFinishedFetching] = useState(false);
   useEffect(() => {
     const getData = async () => {
@@ -41,6 +44,9 @@ const Index = ({ changeToastData }: IndexProps) => {
 
     getData();
   }, []);
+  const removeNote = (id: string) => {
+    setPublicNotes(publicNotes?.filter(({ _id }) => _id !== id));
+  };
   return (
     <div className="flex flex-col justify-center items-center ">
       <h2 className="mx-auto text-xl pb-4">Public Notes List</h2>
@@ -48,6 +54,7 @@ const Index = ({ changeToastData }: IndexProps) => {
         <PublicNotesList
           publicNotes={publicNotes}
           changeToastData={changeToastData}
+          removeNote={removeNote}
         />
       ) : (
         <div className="mt-8">

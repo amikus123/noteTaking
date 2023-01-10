@@ -7,7 +7,7 @@ interface CardToggleProps {
 const CardToggle = ({ isDone, toggleDone }: CardToggleProps) => {
   return (
     <label
-      className="relative inline-flex items-center cursor-pointer"
+      className="relative inline-flex items-center cursor-pointer w-fit"
       onClick={toggleDone}
     >
       <input
