@@ -11,8 +11,13 @@ const {
 interface IndexProps {
   changeToastData: ChangeToastData;
 }
+
+export interface PublicNoteState {
+  isEditing: boolean;
+  data: PublicNote;
+}
 const Index = ({ changeToastData }: IndexProps) => {
-  const [publicNotes, setPublicNotes] = useState<PublicNote[] | undefined>(
+  const [publicNotes, setPublicNotes] = useState<PublicNoteState[] | undefined>(
     undefined
   );
   const [finishedFetching, setFinishedFetching] = useState(false);
@@ -22,10 +27,15 @@ const Index = ({ changeToastData }: IndexProps) => {
         .get(`${API_HOST}/api/publicNotes`)
         .catch((e) => {
           console.error(e);
+          setPublicNotes([]);
           return { data: [] };
         })
         .then(({ data }) => {
-          setPublicNotes(data);
+          setPublicNotes(
+            data.map((item: PublicNote) => {
+              return { isEditing: false, data: item };
+            })
+          );
         })
         .finally(() => {
           setFinishedFetching(true);
@@ -34,14 +44,16 @@ const Index = ({ changeToastData }: IndexProps) => {
     getData();
   }, []);
 
-  const updateNote = (id: string, newState: PublicNote) => {
+  const updateNote = (id: string, newState: PublicNoteState) => {
     setPublicNotes(
-      publicNotes?.map((item) => (item._id === id ? newState : item))
+      publicNotes?.map((item) =>
+        item.data._id === id ? { ...item, ...newState } : item
+      )
     );
   };
 
   const removeNote = (id: string) => {
-    setPublicNotes(publicNotes?.filter(({ _id }) => _id !== id));
+    setPublicNotes(publicNotes?.filter(({ data }) => data._id !== id));
   };
 
   return (

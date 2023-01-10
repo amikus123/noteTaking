@@ -4,6 +4,7 @@ import { omit } from "lodash";
 import getConfig from "next/config";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { PublicNoteState } from "../../../pages/publicNotes";
 import { ChangeToastData } from "../../../pages/_app";
 import {
   NoteUpdateFormValues,
@@ -17,18 +18,19 @@ const {
 } = getConfig();
 
 interface NoteEditModeProps {
-  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
-  data: PublicNote;
+  setEditMode: (value: boolean) => void;
+  publicNote: PublicNoteState;
   changeToastData: ChangeToastData;
-  updateNote: (id: string, newState: PublicNote) => void;
+  updateNote: (id: string, newState: PublicNoteState) => void;
 }
 
 const NoteEditMode = ({
   setEditMode,
-  data,
+  publicNote,
   changeToastData,
   updateNote,
 }: NoteEditModeProps) => {
+  const { data, isEditing } = publicNote;
   const {
     register,
     handleSubmit,
@@ -47,7 +49,10 @@ const NoteEditMode = ({
       })
       .then(() => {
         changeToastData("Changes were successful", "green");
-        updateNote(data._id, { ...data, ...getValues() });
+        updateNote(data._id, {
+          ...publicNote,
+          data: { ...data, ...getValues() },
+        });
         setEditMode(false);
       })
       .catch(() => {

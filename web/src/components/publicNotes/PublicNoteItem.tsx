@@ -7,11 +7,12 @@ import { PublicNote } from "../../types";
 import CardToggle from "./CardToggle";
 import NoteEditMode from "./NoteEditMode";
 import omit from "lodash/omit";
+import { PublicNoteState } from "../../../pages/publicNotes";
 interface PublicNoteItemProps {
-  publicNote: PublicNote;
+  publicNote: PublicNoteState;
   changeToastData: ChangeToastData;
   removeNote: (id: string) => void;
-  updateNote: (id: string, newState: PublicNote) => void;
+  updateNote: (id: string, newState: PublicNoteState) => void;
 }
 
 const {
@@ -24,8 +25,8 @@ const PublicNoteItem = ({
   removeNote,
   updateNote,
 }: PublicNoteItemProps) => {
-  const [editMode, setEditMode] = useState(false);
-  const { _id, description, isDone, title } = publicNote;
+  const { isEditing, data } = publicNote;
+  const { _id, description, isDone, title } = data;
   const toggleDone = async () => {
     axios
       .put(`${API_HOST}/api/publicNotes/${_id}`, {
@@ -34,7 +35,10 @@ const PublicNoteItem = ({
       })
       .then(() => {
         changeToastData("Changes were successful", "green");
-        updateNote(_id, { ...publicNote, isDone: !isDone });
+        updateNote(_id, {
+          isEditing,
+          data: { ...publicNote.data, isDone: !isDone },
+        });
       })
       .catch(() => {
         changeToastData("Something went wrong", "red");
@@ -51,6 +55,10 @@ const PublicNoteItem = ({
         changeToastData("Something went wrong", "red");
       });
   };
+
+  const setEditMode = (value: boolean) => {
+    updateNote(_id, { isEditing: value, data });
+  };
   return (
     <li
       className={`w-full h-auto 
@@ -59,12 +67,13 @@ const PublicNoteItem = ({
     flex-col
     gap-4
     rounded
-    p-4 ${editMode ? "bg-white" : isDone ? "bg-green-400" : "bg-red-400"}`}
+    p-4 ${isEditing ? "bg-white" : isDone ? "bg-green-400" : "bg-red-400"}`}
     >
-      {editMode ? (
+      {_id}
+      {isEditing ? (
         <NoteEditMode
           setEditMode={setEditMode}
-          data={publicNote}
+          publicNote={publicNote}
           changeToastData={changeToastData}
           updateNote={updateNote}
         />
