@@ -6,6 +6,7 @@ import axios from "axios";
 import getConfig from "next/config";
 import router from "next/router";
 import PublicNotesList from "../../src/components/publicNotes/PublicNotesList";
+import { ChangeToastData } from "../_app";
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
@@ -16,7 +17,10 @@ export interface PublicNote {
   title: string;
   isDone: boolean;
 }
-const Index = () => {
+interface IndexProps {
+  changeToastData: ChangeToastData;
+}
+const Index = ({ changeToastData }: IndexProps) => {
   const [publicNotes, setPublicNotes] = useState<PublicNote[] | null>(null);
   const [finishedFetching, setFinishedFetching] = useState(false);
   useEffect(() => {
@@ -41,7 +45,10 @@ const Index = () => {
     <div className="flex flex-col justify-center items-center ">
       <h2 className="mx-auto text-xl pb-4">Public Notes List</h2>
       {finishedFetching ? (
-        <PublicNotesList publicNotes={publicNotes} />
+        <PublicNotesList
+          publicNotes={publicNotes}
+          changeToastData={changeToastData}
+        />
       ) : (
         <div className="mt-8">
           <p>Loading...</p>

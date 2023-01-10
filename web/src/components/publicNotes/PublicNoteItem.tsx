@@ -3,17 +3,22 @@ import getConfig from "next/config";
 import Image from "next/image";
 import React, { useState } from "react";
 import { PublicNote } from "../../../pages/publicNotes";
+import { ChangeToastData } from "../../../pages/_app";
 import CardInteractions from "./CardInteractions";
 
 interface PublicNoteItemProps {
   publicNote: PublicNote;
+  changeToastData: ChangeToastData;
 }
 
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
 
-const PublicNoteItem = ({ publicNote }: PublicNoteItemProps) => {
+const PublicNoteItem = ({
+  publicNote,
+  changeToastData,
+}: PublicNoteItemProps) => {
   const [dynamicState, setDynamicState] = useState<PublicNote>({
     _id: publicNote._id,
     description: publicNote.description,
@@ -23,12 +28,18 @@ const PublicNoteItem = ({ publicNote }: PublicNoteItemProps) => {
   const { _id, description, isDone, title } = dynamicState;
 
   const toggleDone = async () => {
-    const res = await axios.put(`${API_HOST}/api/publicNotes/${_id}`, {
-      ...dynamicState,
-      title: "AAAAAAAAAAAAAAAA",
-      isDone: !isDone,
-    });
-    console.log({ res });
+    axios
+      .put(`${API_HOST}/api/publicNotes/${_id}`, {
+        ...dynamicState,
+        isDone: !isDone,
+      })
+      .then(() => {
+        changeToastData("Changes were successful", "green");
+        setDynamicState({ ...dynamicState, isDone: !isDone });
+      })
+      .catch(() => {
+        changeToastData("Something went wrong", "red");
+      });
   };
 
   return (
@@ -39,9 +50,7 @@ const PublicNoteItem = ({ publicNote }: PublicNoteItemProps) => {
     flex-col
     gap-4
     p-4 ${isDone ? "bg-green-400" : "bg-red-400"}`}
-      onClick={() => {
-        toggleDone();
-      }}
+      onClick={() => {}}
     >
       <div className=" pt-2 w-full flex justify-end">
         <Image
@@ -54,7 +63,7 @@ const PublicNoteItem = ({ publicNote }: PublicNoteItemProps) => {
       </div>
       <p className="">Title: {title}</p>
       <p>Description: {description}</p>
-      <CardInteractions isDone />
+      <CardInteractions isDone={isDone} toggleDone={toggleDone} />
     </li>
   );
 };

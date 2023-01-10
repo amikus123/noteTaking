@@ -2,8 +2,33 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Layout from "../src/components/layout/Layout";
 import Head from "next/head";
+import Toast from "../src/components/layout/Toast";
+import { useState } from "react";
+
+export interface ToastData {
+  color: "red" | "green";
+  text: string;
+  visible: boolean;
+}
+export type ChangeToastData = (text: string, color?: "red" | "green") => void;
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [toastData, setToastData] = useState<ToastData>({
+    color: "green",
+    text: "",
+    visible: false,
+  });
+  const [previousTimeout, setPreviousTimeout] = useState<
+    undefined | NodeJS.Timeout
+  >(undefined);
+  const changeToastData = (text: string, color: "red" | "green" = "red") => {
+    setToastData({ text, color, visible: true });
+    clearTimeout(previousTimeout);
+    const code = setTimeout(() => {
+      setToastData({ text, color, visible: false });
+    }, 2000);
+    setPreviousTimeout(code);
+  };
   return (
     <Layout>
       <Head>
@@ -13,7 +38,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Component {...pageProps} />
+      <Component {...pageProps} changeToastData={changeToastData} />
+      <Toast toastData={toastData} />
     </Layout>
   );
 }

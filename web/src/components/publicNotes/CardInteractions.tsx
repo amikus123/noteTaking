@@ -3,12 +3,13 @@ import CardToggle from "./CardToggle";
 
 interface CardInteractionsProps {
   isDone: boolean;
+  toggleDone: () => Promise<void>;
 }
-const CardInteractions = ({ isDone }: CardInteractionsProps) => {
+const CardInteractions = ({ isDone, toggleDone }: CardInteractionsProps) => {
   return (
     <>
       <p>Edit card</p>
-      <CardToggle isDone={isDone} />
+      <CardToggle isDone={isDone} toggleDone={toggleDone} />
     </>
   );
 };

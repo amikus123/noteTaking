@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import getConfig from "next/config";
 import Link from "next/link";
+import { ChangeToastData } from "../_app";
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
@@ -14,8 +15,10 @@ const noteSchema = object({
   description: string().min(1, "Description is required"),
 });
 type FormValues = TypeOf<typeof noteSchema>;
-
-const Index = () => {
+interface IndexProps {
+  changeToastData: ChangeToastData;
+}
+const Index = ({ changeToastData }: IndexProps) => {
   const [message, setMessage] = useState<string>("");
   const {
     register,
@@ -25,23 +28,15 @@ const Index = () => {
     resolver: zodResolver(noteSchema),
   });
 
-  const resetMessageWithDelay = () => {
-    setTimeout(() => {
-      setMessage("");
-    }, 1500);
-  };
   const onSubmit = (values: FormValues) => {
     axios
       .post(`${API_HOST}/api/publicNotes`, values)
       .then(() => {
-        setMessage("Note was created");
+        changeToastData("Note was created", "green");
       })
       .catch((e) => {
         console.log("Error!", e);
-        setMessage("Something went wrong");
-      })
-      .finally(() => {
-        resetMessageWithDelay();
+        changeToastData("Something went wrong", "red");
       });
   };
 
@@ -85,15 +80,6 @@ const Index = () => {
             View notes
           </button>
         </Link>
-        {message !== "" && (
-          <p
-            className={`${
-              message === "Note was created" ? "text-green-600" : "text-red-400"
-            }`}
-          >
-            {message}
-          </p>
-        )}
       </form>
     </div>
   );
