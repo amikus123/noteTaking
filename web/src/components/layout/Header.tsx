@@ -4,11 +4,11 @@ import React from "react";
 const pages = [
   {
     text: "Create public note",
-    href: "",
+    href: "/publicNotes/create",
   },
   {
     text: "View public notes",
-    href: "",
+    href: "/publicNotes/ ",
   },
 ];
 

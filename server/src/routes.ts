@@ -3,6 +3,7 @@ import {
   createPublicNoteHandler,
   deletePublicNoteHandler,
   getPublicNoteHandler,
+  getPublicNotesHandler,
   updatePublicNoteHandler,
 } from "./controllers/publicnotes.controllers";
 import { Express, Request, Response } from "express";
@@ -27,6 +28,8 @@ export default function routes(app: Express) {
   );
   // get public note
   app.get("/api/publicNotes/:noteId", getPublicNoteHandler);
+  app.get("/api/publicNotes/", getPublicNotesHandler);
+
   // remove public note
   app.delete("/api/publicNotes/:noteId", deletePublicNoteHandler);
 }

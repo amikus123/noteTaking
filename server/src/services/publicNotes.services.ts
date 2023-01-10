@@ -1,6 +1,6 @@
+import { UpdatePublicNoteInput } from "./../schemas/publicNote.schema";
 import { PublicNote, PublicNoteDocument } from "./../models/publicNotes.models";
 import PublicNoteModel from "../models/publicNotes.models";
-import { CreatePublicNoteInput } from "../schemas/publicNote.schema";
 import { DocumentDefinition, FilterQuery, QueryOptions } from "mongoose";
 
 export const createPublicNote = (input: DocumentDefinition<PublicNote>) => {
@@ -9,8 +9,8 @@ export const createPublicNote = (input: DocumentDefinition<PublicNote>) => {
 
 export const updatePublicNote = (
   query: FilterQuery<PublicNoteDocument>,
-  update: CreatePublicNoteInput,
-  options: QueryOptions = { lean: true }
+  update: UpdatePublicNoteInput["body"],
+  options: QueryOptions = { lean: true, new: true }
 ) => {
   return PublicNoteModel.findOneAndUpdate(query, update, options);
 };
@@ -24,4 +24,8 @@ export const findPublicNote = (
 
 export const deletePublicNote = (query: FilterQuery<PublicNoteDocument>) => {
   return PublicNoteModel.deleteOne(query);
+};
+
+export const getAllPublicNotes = () => {
+  return PublicNoteModel.find({});
 };

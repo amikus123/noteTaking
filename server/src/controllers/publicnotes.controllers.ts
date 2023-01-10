@@ -10,7 +10,9 @@ import {
   updatePublicNote,
   deletePublicNote,
   findPublicNote,
+  getAllPublicNotes,
 } from "../services/publicNotes.services";
+import omit from "lodash/omit";
 import logger from "../utils/logger";
 
 export const createPublicNoteHandler = async (
@@ -37,7 +39,6 @@ export const updatePublicNoteHandler = async (
 ) => {
   try {
     const body = req.body;
-    console.log({ body });
     const noteId = req.params.noteId;
     const publicNote = await findPublicNote({ _id: noteId });
     if (!publicNote) {
@@ -45,10 +46,7 @@ export const updatePublicNoteHandler = async (
     }
     const updatedProduct = await updatePublicNote(
       { _id: noteId },
-      { body },
-      {
-        new: true,
-      }
+      { ...omit(body, "_id") }
     );
 
     return res.send(updatedProduct);
@@ -70,6 +68,19 @@ export const getPublicNoteHandler = async (
       return res.sendStatus(404);
     }
     return res.send(publicNote);
+  } catch (e) {
+    logger.error("Error when gettinh public note: ", e);
+    return res.status(400).send(e.message);
+  }
+};
+
+export const getPublicNotesHandler = async (
+  req: Request<GetPublicNoteInput["params"]>,
+  res: Response
+) => {
+  try {
+    const publicNotes = await getAllPublicNotes();
+    return res.send(publicNotes);
   } catch (e) {
     logger.error("Error when gettinh public note: ", e);
     return res.status(400).send(e.message);

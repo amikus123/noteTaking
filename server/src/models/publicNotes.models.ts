@@ -10,11 +10,12 @@ export interface PublicNoteDocument extends PublicNote, mongoose.Document {
   updatedAd: Date;
 }
 
+
 const publicNoteSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    isDone: { type: Boolean, default: false },
+    isDone: { type: Boolean, default: false ,},
   },
   {
     timestamps: true,

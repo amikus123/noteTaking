@@ -5,58 +5,49 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import getConfig from "next/config";
 import router from "next/router";
+import PublicNotesList from "../../src/components/publicNotes/PublicNotesList";
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
 
-const noteSchema = object({
-  title: string().min(1, "Title is required"),
-  description: string().min(1, "Description is required"),
-});
-type FormValues = TypeOf<typeof noteSchema>;
-
+export interface PublicNote {
+  description: string;
+  _id: string;
+  title: string;
+  isDone: boolean;
+}
 const Index = () => {
-  const [error, setError] = useState<string>("");
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(noteSchema),
-  });
+  const [publicNotes, setPublicNotes] = useState<PublicNote[] | null>(null);
+  const [finishedFetching, setFinishedFetching] = useState(false);
+  useEffect(() => {
+    const getData = async () => {
+      axios
+        .get(`${API_HOST}/api/publicNotes`)
+        .catch((e) => {
+          console.error(e);
+          return { data: [] };
+        })
+        .then(({ data }) => {
+          setPublicNotes(data);
+        })
+        .finally(() => {
+          setFinishedFetching(true);
+        });
+    };
 
-  const onSubmit = (values: FormValues) => {
-    try {
-      axios.post(`${API_HOST}/api/publicNotes`, values);
-    } catch (e) {
-      setError("Something went wrong");
-      console.log("Error!", e);
-    }
-  };
-  console.log({ errors, a: process.env.API_HOST });
+    getData();
+  }, []);
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="title"></label>
-        <input
-          id="title"
-          type="text"
-          placeholder="Example title"
-          {...register("title")}
-        ></input>
-        <label htmlFor="description"></label>
-        {errors?.title && <p>{errors?.title?.message}</p>}
-
-        <input
-          id="description"
-          type="text"
-          placeholder="Example description"
-          {...register("description")}
-        ></input>
-
-        <button type="submit">Submit</button>
-        {error !== "" && <p>{error}</p>}
-      </form>
+    <div className="flex flex-col justify-center items-center ">
+      <h2 className="mx-auto text-xl pb-4">Public Notes List</h2>
+      {finishedFetching ? (
+        <PublicNotesList publicNotes={publicNotes} />
+      ) : (
+        <div className="mt-8">
+          <p>Loading...</p>
+          <div className="loader mx-auto mt-4"></div>
+        </div>
+      )}
     </div>
   );
 };
