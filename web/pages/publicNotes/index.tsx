@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { string, object, number, TypeOf } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import getConfig from "next/config";
-import router from "next/router";
-import PublicNotesList from "../../src/components/publicNotes/PublicNotesList";
 import { ChangeToastData } from "../_app";
+import PublicNoteItem from "../../src/components/publicNotes/PublicNoteItem";
+import { PublicNote } from "../../src/types";
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
-
-export interface PublicNote {
-  description: string;
-  _id: string;
-  title: string;
-  isDone: boolean;
-}
 
 interface IndexProps {
   changeToastData: ChangeToastData;
@@ -41,21 +31,40 @@ const Index = ({ changeToastData }: IndexProps) => {
           setFinishedFetching(true);
         });
     };
-
     getData();
   }, []);
+
+  const updateNote = (id: string, newState: PublicNote) => {
+    setPublicNotes(
+      publicNotes?.map((item) => (item._id === id ? newState : item))
+    );
+  };
+
   const removeNote = (id: string) => {
     setPublicNotes(publicNotes?.filter(({ _id }) => _id !== id));
   };
+
   return (
     <div className="flex flex-col justify-center items-center ">
       <h2 className="mx-auto text-xl pb-4">Public Notes List</h2>
       {finishedFetching ? (
-        <PublicNotesList
-          publicNotes={publicNotes}
-          changeToastData={changeToastData}
-          removeNote={removeNote}
-        />
+        publicNotes === undefined || publicNotes.length === 0 ? (
+          <p>{`No items were found :(`}</p>
+        ) : (
+          <ul className="gap-4 flex flex-col w-80">
+            {publicNotes.map((item, index) => {
+              return (
+                <PublicNoteItem
+                  removeNote={removeNote}
+                  key={index}
+                  publicNote={item}
+                  changeToastData={changeToastData}
+                  updateNote={updateNote}
+                />
+              );
+            })}
+          </ul>
+        )
       ) : (
         <div className="mt-8">
           <p>Loading...</p>

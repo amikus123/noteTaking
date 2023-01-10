@@ -2,14 +2,16 @@ import axios from "axios";
 import getConfig from "next/config";
 import Image from "next/image";
 import React, { useState } from "react";
-import { PublicNote } from "../../../pages/publicNotes";
 import { ChangeToastData } from "../../../pages/_app";
-import CardInteractions from "./CardInteractions";
-
+import { PublicNote } from "../../types";
+import CardToggle from "./CardToggle";
+import NoteEditMode from "./NoteEditMode";
+import omit from "lodash/omit";
 interface PublicNoteItemProps {
   publicNote: PublicNote;
   changeToastData: ChangeToastData;
   removeNote: (id: string) => void;
+  updateNote: (id: string, newState: PublicNote) => void;
 }
 
 const {
@@ -20,24 +22,19 @@ const PublicNoteItem = ({
   publicNote,
   changeToastData,
   removeNote,
+  updateNote,
 }: PublicNoteItemProps) => {
-  const [dynamicState, setDynamicState] = useState<PublicNote>({
-    _id: publicNote._id,
-    description: publicNote.description,
-    isDone: publicNote.isDone,
-    title: publicNote.title,
-  });
-  const { _id, description, isDone, title } = dynamicState;
-
+  const [editMode, setEditMode] = useState(false);
+  const { _id, description, isDone, title } = publicNote;
   const toggleDone = async () => {
     axios
       .put(`${API_HOST}/api/publicNotes/${_id}`, {
-        ...dynamicState,
+        ...publicNote,
         isDone: !isDone,
       })
       .then(() => {
         changeToastData("Changes were successful", "green");
-        setDynamicState({ ...dynamicState, isDone: !isDone });
+        updateNote(_id, { ...publicNote, isDone: !isDone });
       })
       .catch(() => {
         changeToastData("Something went wrong", "red");
@@ -61,21 +58,41 @@ const PublicNoteItem = ({
     flex
     flex-col
     gap-4
-    p-4 ${isDone ? "bg-green-400" : "bg-red-400"}`}
+    rounded
+    p-4 ${editMode ? "bg-white" : isDone ? "bg-green-400" : "bg-red-400"}`}
     >
-      <div className="w-full flex justify-end">
-        <Image
-          src="x.svg"
-          width={16}
-          height={16}
-          alt="X"
-          className="cursor-pointer"
-          onClick={deleteCard}
+      {editMode ? (
+        <NoteEditMode
+          setEditMode={setEditMode}
+          data={publicNote}
+          changeToastData={changeToastData}
+          updateNote={updateNote}
         />
-      </div>
-      <p className="">Title: {title}</p>
-      <p>Description: {description}</p>
-      <CardInteractions isDone={isDone} toggleDone={toggleDone} />
+      ) : (
+        <>
+          <div className="w-full flex justify-end">
+            <Image
+              src="x.svg"
+              width={16}
+              height={16}
+              alt="X"
+              className="cursor-pointer"
+              onClick={deleteCard}
+            />
+          </div>
+          <p className="">Title: {title}</p>
+          <p>Description: {description}</p>
+          <CardToggle isDone={isDone} toggleDone={toggleDone} />
+          <p
+            className="cursor-pointer"
+            onClick={() => {
+              setEditMode(true);
+            }}
+          >
+            Edit card
+          </p>
+        </>
+      )}
     </li>
   );
 };

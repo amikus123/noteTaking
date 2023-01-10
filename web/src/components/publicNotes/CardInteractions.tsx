@@ -6,12 +6,7 @@ interface CardInteractionsProps {
   toggleDone: () => Promise<void>;
 }
 const CardInteractions = ({ isDone, toggleDone }: CardInteractionsProps) => {
-  return (
-    <>
-      <p>Edit card</p>
-      <CardToggle isDone={isDone} toggleDone={toggleDone} />
-    </>
-  );
+  return <></>;
 };
 
 export default CardInteractions;

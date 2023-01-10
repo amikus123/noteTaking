@@ -1,34 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { string, object, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import getConfig from "next/config";
 import Link from "next/link";
 import { ChangeToastData } from "../_app";
+import { NoteCreationFormValues, noteCreationSchema } from "../../src/types";
+
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
 
-const noteSchema = object({
-  title: string().min(1, "Title is required"),
-  description: string().min(1, "Description is required"),
-});
-type FormValues = TypeOf<typeof noteSchema>;
 interface IndexProps {
   changeToastData: ChangeToastData;
 }
 const Index = ({ changeToastData }: IndexProps) => {
-  const [message, setMessage] = useState<string>("");
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(noteSchema),
+  } = useForm<NoteCreationFormValues>({
+    resolver: zodResolver(noteCreationSchema),
   });
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: NoteCreationFormValues) => {
     axios
       .post(`${API_HOST}/api/publicNotes`, values)
       .then(() => {
