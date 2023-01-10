@@ -30,12 +30,14 @@ const NoteEditMode = ({
   changeToastData,
   updateNote,
 }: NoteEditModeProps) => {
-  const { data, isEditing } = publicNote;
+  const { data } = publicNote;
+  const { _id } = data;
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
+    watch,
   } = useForm<NoteUpdateFormValues>({
     resolver: zodResolver(noteUpdateSchema),
     defaultValues: omit(data, "_id"),
@@ -43,17 +45,16 @@ const NoteEditMode = ({
 
   const onSubmit = () => {
     axios
-      .put(`${API_HOST}/api/publicNotes/${data._id}`, {
+      .put(`${API_HOST}/api/publicNotes/${_id}`, {
         ...data,
         ...getValues(),
       })
       .then(() => {
         changeToastData("Changes were successful", "green");
-        updateNote(data._id, {
-          ...publicNote,
+        updateNote(_id, {
+          isEditing: false,
           data: { ...data, ...getValues() },
         });
-        setEditMode(false);
       })
       .catch(() => {
         changeToastData("Something went wrong", "red");
@@ -85,7 +86,11 @@ const NoteEditMode = ({
         {...register("description")}
       ></input>
 
-      <CardToggle toggleDone={() => {}} formData={register("isDone")} />
+      <CardToggle
+        toggleDone={() => {}}
+        isDone={watch("isDone")}
+        formData={register("isDone")}
+      />
       <button
         type="submit"
         className=" border-2 py-2 bg-green-400 border-green-400 text-white  rounded-md"

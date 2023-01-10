@@ -30,7 +30,7 @@ const PublicNoteItem = ({
   const toggleDone = async () => {
     axios
       .put(`${API_HOST}/api/publicNotes/${_id}`, {
-        ...publicNote,
+        ...data,
         isDone: !isDone,
       })
       .then(() => {
@@ -57,7 +57,7 @@ const PublicNoteItem = ({
   };
 
   const setEditMode = (value: boolean) => {
-    updateNote(_id, { isEditing: value, data });
+    updateNote(_id, { isEditing: value, data:{...data} });
   };
   return (
     <li
