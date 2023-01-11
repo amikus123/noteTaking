@@ -6,6 +6,8 @@ import getConfig from "next/config";
 import Link from "next/link";
 import { ChangeToastData } from "../_app";
 import { NoteCreationFormValues, noteCreationSchema } from "../../src/types";
+import Input from "../../src/components/form/Input";
+import { omit } from "lodash";
 
 const {
   publicRuntimeConfig: { API_HOST },
@@ -18,9 +20,11 @@ const Index = ({ changeToastData }: IndexProps) => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<NoteCreationFormValues>({
     resolver: zodResolver(noteCreationSchema),
+    defaultValues: { priority: 5 },
   });
 
   const onSubmit = (values: NoteCreationFormValues) => {
@@ -34,7 +38,7 @@ const Index = ({ changeToastData }: IndexProps) => {
         changeToastData("Something went wrong", "red");
       });
   };
-
+  console.log(watch("deadline"));
   return (
     <div className="flex flex-col mx-auto pt-4">
       <h2 className="mx-auto text-xl pb-4">Create public note</h2>
@@ -42,26 +46,45 @@ const Index = ({ changeToastData }: IndexProps) => {
         className="flex-col flex justify-center  mx-auto gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label htmlFor="title">Title</label>
-        <input
-          className="border border-1 p-2 rounded-md"
-          id="title"
-          type="text"
-          required
+        <Input
+          register={register("title")}
+          label="Title"
           placeholder="Enter title"
-          {...register("title")}
-        ></input>
-        <label htmlFor="description">Description</label>
-        {errors?.title && <p>{errors?.title?.message}</p>}
-
-        <input
-          className="border border-1 p-2 rounded-md"
-          id="description"
-          type="text"
+          id="title"
           required
+          error={errors.title}
+        />
+
+        <Input
+          register={register("description")}
+          label="Description"
           placeholder="Enter description"
-          {...register("description")}
-        ></input>
+          id="description"
+          error={errors.description}
+        />
+
+        <Input
+          register={register("priority")}
+          label="Priority (1-5)"
+          placeholder="1"
+          id="priority"
+          type="number"
+          required
+          min={1}
+          max={5}
+          error={errors.priority}
+        />
+
+        <Input
+          register={register("deadline")}
+          label="Deadline"
+          id="deadline"
+          type="date"
+          // min date is equal to today
+          min={new Date().toISOString().split("T")[0]}
+          error={errors.deadline}
+          placeholder="dd/mm/yyyy"
+        />
 
         <button
           type="submit"

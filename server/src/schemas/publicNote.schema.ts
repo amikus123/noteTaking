@@ -1,18 +1,18 @@
-import { string, object, number, TypeOf, boolean } from "zod";
+import { string, object, number, TypeOf, boolean, date } from "zod";
 
 const createPayload = {
   body: object({
     title: string({ required_error: "Title is required" }),
-    description: string({ required_error: "Description is required" }),
+    description: string(),
+    priority: number({ required_error: "Priority is required" }),
+    deadline: string(),
   }),
 };
+
 const payload = {
-  body: object({
-    title: string({ required_error: "Title is required" }),
-    description: string({ required_error: "Description is required" }),
-    isDone: boolean(),
-  }),
+  body: createPayload.body.extend({ isDone: boolean() }),
 };
+
 const params = {
   params: object({
     noteId: string({ required_error: "NoteId is required" }),

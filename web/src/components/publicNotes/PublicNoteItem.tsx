@@ -1,12 +1,10 @@
 import axios from "axios";
 import getConfig from "next/config";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import { ChangeToastData } from "../../../pages/_app";
-import { PublicNote } from "../../types";
 import CardToggle from "./CardToggle";
 import NoteEditMode from "./NoteEditMode";
-import omit from "lodash/omit";
 import { PublicNoteState } from "../../../pages/publicNotes";
 interface PublicNoteItemProps {
   publicNote: PublicNoteState;
@@ -57,7 +55,7 @@ const PublicNoteItem = ({
   };
 
   const setEditMode = (value: boolean) => {
-    updateNote(_id, { isEditing: value, data:{...data} });
+    updateNote(_id, { isEditing: value, data: { ...data } });
   };
   return (
     <li
@@ -69,7 +67,6 @@ const PublicNoteItem = ({
     rounded
     p-4 ${isEditing ? "bg-white" : isDone ? "bg-green-400" : "bg-red-400"}`}
     >
-      {_id}
       {isEditing ? (
         <NoteEditMode
           setEditMode={setEditMode}

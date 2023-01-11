@@ -14,6 +14,7 @@ import {
 } from "../services/publicNotes.services";
 import omit from "lodash/omit";
 import logger from "../utils/logger";
+import { textToDate } from "../utils/date";
 
 export const createPublicNoteHandler = async (
   req: Request<{}, {}, CreatePublicNoteInput["body"]>,
@@ -21,7 +22,10 @@ export const createPublicNoteHandler = async (
 ) => {
   try {
     const body = req.body;
-    const publicNote = await createPublicNote({ ...body });
+    const publicNote = await createPublicNote({
+      ...body,
+      deadline: textToDate(body.deadline),
+    });
     return res.send(publicNote);
   } catch (e) {
     logger.error("Error when adding public note: ", e);

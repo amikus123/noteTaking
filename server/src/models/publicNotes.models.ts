@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 export interface PublicNote {
   title: string;
-  description: string;
+  description?: string;
+  // 1 to 5
+  priority: number;
+  deadline?: Date;
 }
 
 export interface PublicNoteDocument extends PublicNote, mongoose.Document {
@@ -10,12 +13,13 @@ export interface PublicNoteDocument extends PublicNote, mongoose.Document {
   updatedAd: Date;
 }
 
-
 const publicNoteSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
-    isDone: { type: Boolean, default: false ,},
+    description: { type: String, required: false },
+    isDone: { type: Boolean, default: false },
+    priority: { type: Number, required: true },
+    deadline: { type: Date, required: false },
   },
   {
     timestamps: true,
