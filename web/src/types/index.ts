@@ -10,10 +10,17 @@ export interface PublicNote {
 export const noteCreationSchema = object({
   title: string().min(1, "Title is required"),
   description: string(),
-  priority: number()
-    .min(1, "Priority is required")
-    .max(5, "Priority can't be higher than 5"),
-  deadline: string(),
+  priority: number().refine(
+    (number) => {
+      console.log(number, number < 1 || number > 5);
+      if (number < 1 || number > 5) {
+        return false;
+      }
+      return true;
+    },
+    { message: "Priority should be between 1 and 5" }
+  ),
+  deadline: date(),
 });
 export type NoteCreationFormValues = TypeOf<typeof noteCreationSchema>;
 

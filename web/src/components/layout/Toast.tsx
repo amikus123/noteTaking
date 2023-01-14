@@ -10,7 +10,7 @@ const Toast = ({ toastData }: PropsToast) => {
     <>
       {visible && (
         <div
-          className={`fixed bottom-8  p-4 bg-${color}-400  rounded left-1/2  -translate-x-1/2`}
+          className={`fixed bottom-8 border  border-black p-4 bg-${color}-400  rounded-md left-1/2  -translate-x-1/2`}
         >
           {text}
         </div>

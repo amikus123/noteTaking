@@ -6,6 +6,7 @@ import { ChangeToastData } from "../../../pages/_app";
 import CardToggle from "./CardToggle";
 import NoteEditMode from "./NoteEditMode";
 import { PublicNoteState } from "../../../pages/publicNotes";
+import { dateToString } from "../../utils/dates";
 interface PublicNoteItemProps {
   publicNote: PublicNoteState;
   changeToastData: ChangeToastData;
@@ -24,8 +25,9 @@ const PublicNoteItem = ({
   updateNote,
 }: PublicNoteItemProps) => {
   const { isEditing, data } = publicNote;
-  const { _id, description, isDone, title } = data;
+  const { _id, description, isDone, title, priority, deadline } = data;
   const toggleDone = async () => {
+    console.log({ data });
     axios
       .put(`${API_HOST}/api/publicNotes/${_id}`, {
         ...data,
@@ -86,8 +88,18 @@ const PublicNoteItem = ({
               onClick={deleteCard}
             />
           </div>
-          <p className="">Title: {title}</p>
-          <p>Description: {description}</p>
+          <p className={`${isDone && "line-through"}`}>Title: {title}</p>
+          {description && (
+            <p className={`${isDone && "line-through"}`}>
+              Description: {description}
+            </p>
+          )}
+          <p className={`${isDone && "line-through"}`}>Priority: {priority}</p>
+          {deadline && (
+            <p className={`${isDone && "line-through"}`}>
+              Deadline: {dateToString(deadline)}
+            </p>
+          )}
           <CardToggle isDone={isDone} toggleDone={toggleDone} />
           <p
             className="cursor-pointer"

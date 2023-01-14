@@ -12,6 +12,7 @@ const Input = ({
   id,
   error,
   required,
+  type,
   ...rest
 }: InputProsp) => {
   return (
@@ -25,6 +26,7 @@ const Input = ({
       <input
         className="border border-1 p-2 rounded-md"
         required={required}
+        type={type}
         {...register}
         {...rest}
       ></input>

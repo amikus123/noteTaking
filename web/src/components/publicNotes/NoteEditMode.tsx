@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { omit } from "lodash";
 import getConfig from "next/config";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PublicNoteState } from "../../../pages/publicNotes";
 import { ChangeToastData } from "../../../pages/_app";
@@ -11,6 +11,9 @@ import {
   noteUpdateSchema,
   PublicNote,
 } from "../../types";
+import { dateToStringYMD } from "../../utils/dates";
+import { removeEmpty } from "../../utils/obj";
+import Input from "../form/Input";
 import CardToggle from "./CardToggle";
 
 const {
@@ -31,7 +34,7 @@ const NoteEditMode = ({
   updateNote,
 }: NoteEditModeProps) => {
   const { data } = publicNote;
-  const { _id } = data;
+  const { _id, deadline } = data;
   const {
     register,
     handleSubmit,
@@ -40,51 +43,92 @@ const NoteEditMode = ({
     watch,
   } = useForm<NoteUpdateFormValues>({
     resolver: zodResolver(noteUpdateSchema),
-    defaultValues: omit(data, "_id"),
+    defaultValues: omit(
+      {
+        ...data,
+        deadline:
+          deadline !== undefined
+            ? // conversion is used to have type safefty with correct default value
+              (dateToStringYMD(deadline) as unknown as Date)
+            : undefined,
+        priority: data.priority,
+      },
+
+      "_id"
+    ),
   });
 
   const onSubmit = () => {
     axios
       .put(`${API_HOST}/api/publicNotes/${_id}`, {
-        ...data,
-        ...getValues(),
+        _id,
+        ...removeEmpty(getValues()),
       })
       .then(() => {
         changeToastData("Changes were successful", "green");
+
+        const newData = {
+          _id,
+          ...removeEmpty(getValues()),
+          deadline:
+            getValues("deadline") !== undefined
+              ? new Date(getValues("deadline"))
+              : undefined,
+        } as PublicNote;
+
         updateNote(_id, {
           isEditing: false,
-          data: { ...data, ...getValues() },
+          data: newData,
         });
       })
       .catch(() => {
         changeToastData("Something went wrong", "red");
       });
   };
+
   return (
     <form
       className="flex-col flex justify-center  mx-auto gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label htmlFor="title">Title</label>
-      <input
-        className="border border-1 p-2 rounded-md"
-        id="title"
-        type="text"
-        required
+      <Input
+        register={register("title")}
+        label="Title"
         placeholder="Enter title"
-        {...register("title")}
-      ></input>
-      <label htmlFor="description">Description</label>
-      {errors?.title && <p>{errors?.title?.message}</p>}
-
-      <input
-        className="border border-1 p-2 rounded-md"
-        id="description"
-        type="text"
+        id="title"
         required
+        error={errors.title}
+      />
+
+      <Input
+        register={register("description")}
+        label="Description"
         placeholder="Enter description"
-        {...register("description")}
-      ></input>
+        id="description"
+        error={errors.description}
+      />
+
+      <Input
+        register={register("priority", { valueAsNumber: true })}
+        label="Priority (1-5)"
+        placeholder="1"
+        id="priority"
+        type="number"
+        required
+        min={1}
+        max={5}
+        error={errors.priority}
+      />
+      <Input
+        register={register("deadline", { valueAsDate: true })}
+        label="Deadline"
+        id="deadline"
+        type="date"
+        // min date is equal to today
+        min={new Date().toISOString().split("T")[0]}
+        error={errors.deadline}
+        placeholder="dd/mm/yyyy"
+      />
 
       <CardToggle
         toggleDone={() => {}}

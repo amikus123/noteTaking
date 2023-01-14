@@ -3,9 +3,9 @@ import { string, object, number, TypeOf, boolean, date } from "zod";
 const createPayload = {
   body: object({
     title: string({ required_error: "Title is required" }),
-    description: string(),
+    description: string().optional(),
     priority: number({ required_error: "Priority is required" }),
-    deadline: string(),
+    deadline: string().optional(),
   }),
 };
 

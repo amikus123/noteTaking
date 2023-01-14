@@ -33,7 +33,13 @@ const Index = ({ changeToastData }: IndexProps) => {
         .then(({ data }) => {
           setPublicNotes(
             data.map((item: PublicNote) => {
-              return { isEditing: false, data: item };
+              return {
+                isEditing: false,
+                data: {
+                  ...item,
+                  deadline: item.deadline ? new Date(item.deadline) : undefined,
+                },
+              };
             })
           );
         })

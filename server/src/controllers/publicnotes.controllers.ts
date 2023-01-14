@@ -24,7 +24,7 @@ export const createPublicNoteHandler = async (
     const body = req.body;
     const publicNote = await createPublicNote({
       ...body,
-      deadline: textToDate(body.deadline),
+      deadline: body.deadline ? textToDate(body.deadline) : undefined,
     });
     return res.send(publicNote);
   } catch (e) {

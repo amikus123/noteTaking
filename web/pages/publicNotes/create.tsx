@@ -7,7 +7,6 @@ import Link from "next/link";
 import { ChangeToastData } from "../_app";
 import { NoteCreationFormValues, noteCreationSchema } from "../../src/types";
 import Input from "../../src/components/form/Input";
-import { omit } from "lodash";
 
 const {
   publicRuntimeConfig: { API_HOST },
@@ -20,7 +19,6 @@ const Index = ({ changeToastData }: IndexProps) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<NoteCreationFormValues>({
     resolver: zodResolver(noteCreationSchema),
@@ -28,8 +26,12 @@ const Index = ({ changeToastData }: IndexProps) => {
   });
 
   const onSubmit = (values: NoteCreationFormValues) => {
+    const newValues: NoteCreationFormValues = {
+      ...values,
+      priority: Number(values.priority),
+    };
     axios
-      .post(`${API_HOST}/api/publicNotes`, values)
+      .post(`${API_HOST}/api/publicNotes`, newValues)
       .then(() => {
         changeToastData("Note was created", "green");
       })
@@ -38,7 +40,6 @@ const Index = ({ changeToastData }: IndexProps) => {
         changeToastData("Something went wrong", "red");
       });
   };
-  console.log(watch("deadline"));
   return (
     <div className="flex flex-col mx-auto pt-4">
       <h2 className="mx-auto text-xl pb-4">Create public note</h2>
@@ -64,7 +65,7 @@ const Index = ({ changeToastData }: IndexProps) => {
         />
 
         <Input
-          register={register("priority")}
+          register={register("priority", { valueAsNumber: true })}
           label="Priority (1-5)"
           placeholder="1"
           id="priority"
@@ -76,7 +77,7 @@ const Index = ({ changeToastData }: IndexProps) => {
         />
 
         <Input
-          register={register("deadline")}
+          register={register("deadline", { valueAsDate: true })}
           label="Deadline"
           id="deadline"
           type="date"
