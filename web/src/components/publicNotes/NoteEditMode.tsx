@@ -89,7 +89,7 @@ const NoteEditMode = ({
 
   return (
     <form
-      className="flex-col flex justify-center  mx-auto gap-4"
+      className="flex-col   flex justify-center  mx-auto gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <Input
@@ -137,7 +137,7 @@ const NoteEditMode = ({
         formData={register("isDone")}
       />
 
-      <Button color="green" type="submit">
+      <Button color="green-400" type="submit">
         Save
       </Button>
 

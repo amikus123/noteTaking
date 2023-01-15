@@ -45,7 +45,7 @@ const Index = ({ changeToastData }: IndexProps) => {
     <div className="flex flex-col mx-auto pt-4">
       <h2 className="mx-auto text-xl pb-4">Create public note</h2>
       <form
-        className="flex-col flex justify-center  mx-auto gap-4"
+        className="flex-col flex justify-center  w-80  mx-auto gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
@@ -88,12 +88,12 @@ const Index = ({ changeToastData }: IndexProps) => {
           placeholder="dd/mm/yyyy"
         />
 
-        <Button color="red" type="submit">
+        <Button color="red-400" className="mx-auto" type="submit">
           Submit
         </Button>
 
-        <Link className="w-full" href="/publicNotes">
-          <Button color="red" className="w-full bg-green-600 border-green-600">
+        <Link className=" mx-auto" href="/publicNotes">
+          <Button color="green-600" className="w-full">
             View notes
           </Button>
         </Link>

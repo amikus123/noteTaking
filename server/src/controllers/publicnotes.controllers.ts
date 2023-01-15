@@ -11,6 +11,7 @@ import {
   deletePublicNote,
   findPublicNote,
   getAllPublicNotes,
+  deletePublicNotes,
 } from "../services/publicNotes.services";
 import omit from "lodash/omit";
 import logger from "../utils/logger";
@@ -99,6 +100,7 @@ export const deletePublicNoteHandler = async (
   res: Response
 ) => {
   try {
+    console.log("XXX", req.query);
     const noteId = req.params.noteId;
     const publicNote = await findPublicNote({ _id: noteId });
     if (!publicNote) {
@@ -116,7 +118,8 @@ export const deletePublicNotesHandler = async (
   res: Response
 ) => {
   try {
-    const deletedNote = await deletePublicNote(req.query);
+    console.log(req.query);
+    const deletedNote = await deletePublicNotes(req.query);
     return res.sendStatus(200);
   } catch (e) {
     logger.error("Error when deleting public note: ", e);

@@ -5,6 +5,7 @@ import { ChangeToastData } from "../_app";
 import PublicNoteItem from "../../src/components/publicNotes/PublicNoteItem";
 import { PublicNote } from "../../src/types";
 import Button from "../../src/components/form/Button";
+import Sorting from "../../src/components/publicNotes/Sorting";
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
@@ -17,15 +18,38 @@ export interface PublicNoteState {
   isEditing: boolean;
   data: PublicNote;
 }
+
+export type SortSettingValue = null | "asc" | "desc";
+export interface SortSettings {
+  priority: SortSettingValue;
+  deadline: SortSettingValue;
+}
+
+const genereateQueryParams = (data: SortSettings) => {
+  return `sort=${`${data.priority === "desc" ? "-" : ""}${
+    data.priority !== null ? "priority" + "%20" : ""
+  }`}${`${data.deadline === "desc" ? "-" : ""}${
+    data.deadline !== null ? "deadline" : ""
+  }`}`;
+};
+
 const Index = ({ changeToastData }: IndexProps) => {
   const [publicNotes, setPublicNotes] = useState<PublicNoteState[] | undefined>(
     undefined
   );
   const [finishedFetching, setFinishedFetching] = useState(false);
+
+  const [sortSettings, setSortSettings] = useState<SortSettings>({
+    deadline: null,
+    priority: null,
+  });
+
   useEffect(() => {
     const getData = async () => {
+      setFinishedFetching(false);
+      const query = genereateQueryParams(sortSettings);
       axios
-        .get(`${API_HOST}/api/publicNotes`)
+        .get(`${API_HOST}/api/publicNotes?${query}`)
         .catch((e) => {
           console.error(e);
           setPublicNotes([]);
@@ -49,7 +73,7 @@ const Index = ({ changeToastData }: IndexProps) => {
         });
     };
     getData();
-  }, []);
+  }, [sortSettings]);
 
   const updateNote = (id: string, newState: PublicNoteState) => {
     setPublicNotes(
@@ -64,7 +88,16 @@ const Index = ({ changeToastData }: IndexProps) => {
   };
 
   const removeDoneTasks = () => {
-    
+    axios
+      .delete(`${API_HOST}/api/publicNotes/?isDone=true`)
+      .then(() => {
+        setPublicNotes(publicNotes?.filter((item) => !item.data.isDone));
+        changeToastData("Removed done tasks", "green");
+      })
+      .catch((e) => {
+        console.error(e.message);
+        changeToastData("Something went wrong");
+      });
   };
 
   return (
@@ -75,10 +108,14 @@ const Index = ({ changeToastData }: IndexProps) => {
           <p>{`No items were found :(`}</p>
         ) : (
           <>
-            <Button color="blue" className="mb-4" onClick={removeDoneTasks}>
+            <Sorting
+              sortSettings={sortSettings}
+              setSortSettings={setSortSettings}
+            />
+            <Button color="blue-400" className="mt-4" onClick={removeDoneTasks}>
               Remove done tasks
             </Button>
-            <ul className="gap-4 flex flex-col w-80">
+            <ul className="gap-4 flex flex-col w-80 mt-8">
               {publicNotes.map((item, index) => {
                 return (
                   <PublicNoteItem

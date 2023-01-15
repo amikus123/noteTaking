@@ -26,9 +26,15 @@ export const deletePublicNote = (query: FilterQuery<PublicNoteDocument>) => {
   return PublicNoteModel.deleteOne(query);
 };
 
+export const deletePublicNotes = (query: FilterQuery<PublicNoteDocument>) => {
+  console.log(query);
+  return PublicNoteModel.deleteMany(query);
+};
+
 export const getAllPublicNotes = (
   query: FilterQuery<PublicNoteDocument>,
   sort: string
 ) => {
+  console.log({ sort });
   return PublicNoteModel.find(query).sort(sort);
 };
