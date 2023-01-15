@@ -14,10 +14,6 @@ interface PublicNoteItemProps {
   updateNote: (id: string, newState: PublicNoteState) => void;
 }
 
-const {
-  publicRuntimeConfig: { API_HOST },
-} = getConfig();
-
 const PublicNoteItem = ({
   publicNote,
   changeToastData,
@@ -29,7 +25,7 @@ const PublicNoteItem = ({
   const toggleDone = async () => {
     console.log({ data });
     axios
-      .put(`${API_HOST}/api/publicNotes/${_id}`, {
+      .put(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes/${_id}`, {
         ...data,
         isDone: !isDone,
       })
@@ -46,7 +42,7 @@ const PublicNoteItem = ({
   };
   const deleteCard = () => {
     axios
-      .delete(`${API_HOST}/api/publicNotes/${_id}`)
+      .delete(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes/${_id}`)
       .then(() => {
         changeToastData("Element has been deleted", "green");
         removeNote(_id);

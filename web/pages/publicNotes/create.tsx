@@ -2,16 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import getConfig from "next/config";
 import Link from "next/link";
 import { ChangeToastData } from "../_app";
 import { NoteCreationFormValues, noteCreationSchema } from "../../src/types";
 import Input from "../../src/components/form/Input";
 import Button from "../../src/components/form/Button";
 
-const {
-  publicRuntimeConfig: { API_HOST },
-} = getConfig();
 
 interface IndexProps {
   changeToastData: ChangeToastData;
@@ -32,7 +28,7 @@ const Index = ({ changeToastData }: IndexProps) => {
       priority: Number(values.priority),
     };
     axios
-      .post(`${API_HOST}/api/publicNotes`, newValues)
+      .post(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes`, newValues)
       .then(() => {
         changeToastData("Note was created", "green");
       })

@@ -6,9 +6,6 @@ import PublicNoteItem from "../src/components/publicNotes/PublicNoteItem";
 import { PublicNote } from "../src/types";
 import Button from "../src/components/form/Button";
 import Sorting from "../src/components/publicNotes/Sorting";
-const {
-  publicRuntimeConfig: { API_HOST },
-} = getConfig();
 
 interface IndexProps {
   changeToastData: ChangeToastData;
@@ -47,8 +44,9 @@ const Index = ({ changeToastData }: IndexProps) => {
   const getData = useCallback(async () => {
     setFinishedFetching(false);
     const query = genereateQueryParams(sortSettings);
+    console.log({ a: process.env.NEXT_PUBLIC_API_HOST });
     axios
-      .get(`${API_HOST}/api/publicNotes?${query}`)
+      .get(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes?${query}`)
       .catch((e) => {
         console.error(e);
         setPublicNotes([]);
@@ -90,7 +88,7 @@ const Index = ({ changeToastData }: IndexProps) => {
 
   const removeDoneTasks = () => {
     axios
-      .delete(`${API_HOST}/api/publicNotes/?isDone=true`)
+      .delete(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes/?isDone=true`)
       .then(() => {
         getData();
         changeToastData("Removed done tasks", "green");

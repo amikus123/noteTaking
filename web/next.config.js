@@ -7,7 +7,7 @@ const nextConfig = {
 
 const withConfig = nextRuntimeDotenv({
   // path: '.env',
-  public: ["API_HOST"],
+  // public: ["API_HOST"],
   // server: ["API_HOST"],
 });
 

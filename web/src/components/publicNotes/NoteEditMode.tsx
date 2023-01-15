@@ -17,10 +17,6 @@ import Button from "../form/Button";
 import Input from "../form/Input";
 import CardToggle from "./CardToggle";
 
-const {
-  publicRuntimeConfig: { API_HOST },
-} = getConfig();
-
 interface NoteEditModeProps {
   setEditMode: (value: boolean) => void;
   publicNote: PublicNoteState;
@@ -61,7 +57,7 @@ const NoteEditMode = ({
 
   const onSubmit = () => {
     axios
-      .put(`${API_HOST}/api/publicNotes/${_id}`, {
+      .put(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes/${_id}`, {
         _id,
         ...removeEmpty(getValues()),
       })
