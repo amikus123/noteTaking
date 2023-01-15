@@ -29,7 +29,7 @@ export const createPublicNoteHandler = async (
       deadline: body.deadline ? textToDate(body.deadline) : undefined,
     });
     return res.send(publicNote);
-  } catch (e) {
+  } catch (e: any) {
     logger.error("Error when adding public note: ", e);
     return res.status(400).send(e.message);
   }
@@ -56,7 +56,7 @@ export const updatePublicNoteHandler = async (
     );
 
     return res.send(updatedProduct);
-  } catch (e) {
+  } catch (e: any) {
     logger.error("Error when adding public note: ", e.message);
     console.log(e);
     return res.status(400).send(e.message);
@@ -74,7 +74,7 @@ export const getPublicNoteHandler = async (
       return res.sendStatus(404);
     }
     return res.send(publicNote);
-  } catch (e) {
+  } catch (e: any) {
     logger.error("Error when gettinh public note: ", e);
     return res.status(400).send(e.message);
   }
@@ -89,7 +89,7 @@ export const getPublicNotesHandler = async (
     const sort = (req.query.sort as string) || "";
     const publicNotes = await getAllPublicNotes(query, sort);
     return res.send(publicNotes);
-  } catch (e) {
+  } catch (e: any) {
     logger.error("Error when gettinh public note: ", e);
     return res.status(400).send(e.message);
   }
@@ -108,7 +108,7 @@ export const deletePublicNoteHandler = async (
     }
     const deletedNote = await deletePublicNote({ _id: noteId });
     return res.sendStatus(200);
-  } catch (e) {
+  } catch (e: any) {
     logger.error("Error when deleting public note: ", e);
     return res.status(400).send(e.message);
   }
@@ -121,7 +121,7 @@ export const deletePublicNotesHandler = async (
     console.log(req.query);
     const deletedNote = await deletePublicNotes(req.query);
     return res.sendStatus(200);
-  } catch (e) {
+  } catch (e: any) {
     logger.error("Error when deleting public note: ", e);
     return res.status(400).send(e.message);
   }

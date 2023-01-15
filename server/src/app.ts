@@ -8,7 +8,6 @@ import cors from "cors";
 const app = express();
 
 const port = process.env.PORT;
-const host = process.env.HOST;
 const origin = process.env.ORIGIN;
 
 // middleware used to parse body
@@ -20,7 +19,7 @@ app.use(
   })
 );
 app.listen(Number(port), async () => {
-  logger.info(`App is running at http://${host}:${port}`);
+  logger.info(`App is running at port ${port}`);
   // db connection
   await connect();
   routes(app);
