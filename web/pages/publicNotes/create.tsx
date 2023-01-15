@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ChangeToastData } from "../_app";
 import { NoteCreationFormValues, noteCreationSchema } from "../../src/types";
 import Input from "../../src/components/form/Input";
+import Button from "../../src/components/form/Button";
 
 const {
   publicRuntimeConfig: { API_HOST },
@@ -87,17 +88,14 @@ const Index = ({ changeToastData }: IndexProps) => {
           placeholder="dd/mm/yyyy"
         />
 
-        <button
-          type="submit"
-          className=" border-2 py-2 bg-red-400 border-red-400 text-white  rounded-md"
-        >
+        <Button color="red" type="submit">
           Submit
-        </button>
+        </Button>
 
         <Link className="w-full" href="/publicNotes">
-          <button className=" w-full border-2 py-2 bg-green-600 border-green-600 text-white  rounded-md">
+          <Button color="red" className="w-full bg-green-600 border-green-600">
             View notes
-          </button>
+          </Button>
         </Link>
       </form>
     </div>

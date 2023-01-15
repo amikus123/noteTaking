@@ -15,6 +15,7 @@ import {
 import omit from "lodash/omit";
 import logger from "../utils/logger";
 import { textToDate } from "../utils/date";
+import { pick } from "lodash";
 
 export const createPublicNoteHandler = async (
   req: Request<{}, {}, CreatePublicNoteInput["body"]>,
@@ -83,7 +84,9 @@ export const getPublicNotesHandler = async (
   res: Response
 ) => {
   try {
-    const publicNotes = await getAllPublicNotes();
+    const query = omit(req.query, "sort");
+    const sort = (req.query.sort as string) || "";
+    const publicNotes = await getAllPublicNotes(query, sort);
     return res.send(publicNotes);
   } catch (e) {
     logger.error("Error when gettinh public note: ", e);
@@ -102,6 +105,18 @@ export const deletePublicNoteHandler = async (
       return res.sendStatus(404);
     }
     const deletedNote = await deletePublicNote({ _id: noteId });
+    return res.sendStatus(200);
+  } catch (e) {
+    logger.error("Error when deleting public note: ", e);
+    return res.status(400).send(e.message);
+  }
+};
+export const deletePublicNotesHandler = async (
+  req: Request<DeletePublicNoteInput["params"]>,
+  res: Response
+) => {
+  try {
+    const deletedNote = await deletePublicNote(req.query);
     return res.sendStatus(200);
   } catch (e) {
     logger.error("Error when deleting public note: ", e);

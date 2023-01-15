@@ -4,6 +4,7 @@ import getConfig from "next/config";
 import { ChangeToastData } from "../_app";
 import PublicNoteItem from "../../src/components/publicNotes/PublicNoteItem";
 import { PublicNote } from "../../src/types";
+import Button from "../../src/components/form/Button";
 const {
   publicRuntimeConfig: { API_HOST },
 } = getConfig();
@@ -62,6 +63,10 @@ const Index = ({ changeToastData }: IndexProps) => {
     setPublicNotes(publicNotes?.filter(({ data }) => data._id !== id));
   };
 
+  const removeDoneTasks = () => {
+    
+  };
+
   return (
     <div className="flex flex-col justify-center items-center ">
       <h2 className="mx-auto text-xl pb-4">Public Notes List</h2>
@@ -69,19 +74,24 @@ const Index = ({ changeToastData }: IndexProps) => {
         publicNotes === undefined || publicNotes.length === 0 ? (
           <p>{`No items were found :(`}</p>
         ) : (
-          <ul className="gap-4 flex flex-col w-80">
-            {publicNotes.map((item, index) => {
-              return (
-                <PublicNoteItem
-                  removeNote={removeNote}
-                  key={index}
-                  publicNote={item}
-                  changeToastData={changeToastData}
-                  updateNote={updateNote}
-                />
-              );
-            })}
-          </ul>
+          <>
+            <Button color="blue" className="mb-4" onClick={removeDoneTasks}>
+              Remove done tasks
+            </Button>
+            <ul className="gap-4 flex flex-col w-80">
+              {publicNotes.map((item, index) => {
+                return (
+                  <PublicNoteItem
+                    removeNote={removeNote}
+                    key={index}
+                    publicNote={item}
+                    changeToastData={changeToastData}
+                    updateNote={updateNote}
+                  />
+                );
+              })}
+            </ul>
+          </>
         )
       ) : (
         <div className="mt-8">

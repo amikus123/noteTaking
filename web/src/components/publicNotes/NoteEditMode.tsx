@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { omit } from "lodash";
 import getConfig from "next/config";
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { PublicNoteState } from "../../../pages/publicNotes";
 import { ChangeToastData } from "../../../pages/_app";
@@ -13,6 +13,7 @@ import {
 } from "../../types";
 import { dateToStringYMD } from "../../utils/dates";
 import { removeEmpty } from "../../utils/obj";
+import Button from "../form/Button";
 import Input from "../form/Input";
 import CardToggle from "./CardToggle";
 
@@ -135,20 +136,19 @@ const NoteEditMode = ({
         isDone={watch("isDone")}
         formData={register("isDone")}
       />
-      <button
-        type="submit"
-        className=" border-2 py-2 bg-green-400 border-green-400 text-white  rounded-md"
-      >
+
+      <Button color="green" type="submit">
         Save
-      </button>
-      <button
-        className=" border-2 py-2 bg-blue-400 border-blue-400 text-white  rounded-md"
+      </Button>
+
+      <Button
+        color="blue"
         onClick={() => {
           setEditMode(false);
         }}
       >
         Go back
-      </button>
+      </Button>
     </form>
   );
 };

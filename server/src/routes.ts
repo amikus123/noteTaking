@@ -2,6 +2,7 @@ import { createPublicNoteSchema } from "./schemas/publicNote.schema";
 import {
   createPublicNoteHandler,
   deletePublicNoteHandler,
+  deletePublicNotesHandler,
   getPublicNoteHandler,
   getPublicNotesHandler,
   updatePublicNoteHandler,
@@ -32,4 +33,5 @@ export default function routes(app: Express) {
 
   // remove public note
   app.delete("/api/publicNotes/:noteId", deletePublicNoteHandler);
+  app.delete("/api/publicNotes/", deletePublicNotesHandler);
 }

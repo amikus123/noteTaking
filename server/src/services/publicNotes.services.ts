@@ -26,6 +26,9 @@ export const deletePublicNote = (query: FilterQuery<PublicNoteDocument>) => {
   return PublicNoteModel.deleteOne(query);
 };
 
-export const getAllPublicNotes = () => {
-  return PublicNoteModel.find({});
+export const getAllPublicNotes = (
+  query: FilterQuery<PublicNoteDocument>,
+  sort: string
+) => {
+  return PublicNoteModel.find(query).sort(sort);
 };

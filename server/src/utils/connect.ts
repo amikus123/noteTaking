@@ -10,5 +10,6 @@ export default function connect() {
     })
     .catch((e) => {
       logger.error("db error ", e);
+      console.error(e);
     });
 }
