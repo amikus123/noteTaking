@@ -40,6 +40,7 @@ const PublicNoteItem = ({
         changeToastData("Something went wrong", "red");
       });
   };
+  
   const deleteCard = () => {
     axios
       .delete(`${process.env.NEXT_PUBLIC_API_HOST}/api/publicNotes/${_id}`)
