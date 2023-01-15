@@ -45,7 +45,7 @@ const Index = ({ changeToastData }: IndexProps) => {
     <div className="flex flex-col mx-auto pt-4">
       <h2 className="mx-auto text-xl pb-4">Create public note</h2>
       <form
-        className="flex-col flex justify-center  w-80  mx-auto gap-4"
+        className="flex-col flex justify-center w-[90vw]  max-w-80  mx-auto gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input

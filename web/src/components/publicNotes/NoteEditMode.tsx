@@ -142,7 +142,7 @@ const NoteEditMode = ({
       </Button>
 
       <Button
-        color="blue"
+        color="blue-400"
         onClick={() => {
           setEditMode(false);
         }}

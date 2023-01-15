@@ -103,7 +103,7 @@ const Index = ({ changeToastData }: IndexProps) => {
 
   return (
     <div className="flex flex-col justify-center items-center ">
-      <h2 className="mx-auto text-xl pb-4">Public Notes List</h2>
+      <h2 className="mx-auto text-xl pb-4">Notes List</h2>
       {finishedFetching ? (
         publicNotes === undefined || publicNotes.length === 0 ? (
           <p>{`No items were found :(`}</p>
