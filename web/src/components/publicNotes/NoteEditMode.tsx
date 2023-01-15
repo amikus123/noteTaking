@@ -4,7 +4,7 @@ import { omit } from "lodash";
 import getConfig from "next/config";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { PublicNoteState } from "../../../pages/publicNotes";
+import { PublicNoteState } from "../../../pages";
 import { ChangeToastData } from "../../../pages/_app";
 import {
   NoteUpdateFormValues,

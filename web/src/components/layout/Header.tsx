@@ -8,7 +8,7 @@ const pages = [
   },
   {
     text: "View public notes",
-    href: "/publicNotes/ ",
+    href: "/ ",
   },
 ];
 

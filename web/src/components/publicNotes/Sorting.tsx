@@ -1,5 +1,5 @@
 import React from "react";
-import { SortSettings, SortSettingValue } from "../../../pages/publicNotes";
+import { SortSettings, SortSettingValue } from "../../../pages";
 
 interface SortingProps {
   sortSettings: SortSettings;

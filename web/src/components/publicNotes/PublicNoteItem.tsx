@@ -5,7 +5,7 @@ import React from "react";
 import { ChangeToastData } from "../../../pages/_app";
 import CardToggle from "./CardToggle";
 import NoteEditMode from "./NoteEditMode";
-import { PublicNoteState } from "../../../pages/publicNotes";
+import { PublicNoteState } from "../../../pages";
 import { dateToString } from "../../utils/dates";
 interface PublicNoteItemProps {
   publicNote: PublicNoteState;
